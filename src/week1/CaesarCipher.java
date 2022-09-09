@@ -1,64 +1,81 @@
 package week1;
 
-public class WordPlay {
+import edu.duke.FileResource;
+
+public class CaesarCipher {
     public static void main(String[] args) {
-    testIsVovel();
+        System.out.println(encrypt("At noon be in the conference room with your hat on for a surprise party. YELL LOUD!", 15));
+        System.out.println(encryptTwoKeys("At noon be in the conference room with your hat on for a surprise party. YELL LOUD!", 8, 21));
     }
 
-    public static boolean isVowel(char ch) {
-    String vovel = "aeiou";
-    String test = Character.toString(ch).toLowerCase();
-        if (vovel.contains(test)) {
-            return true;
-
-        }
-    return false;
-    }
-
-    public static void testIsVovel() {
-        System.out.println("a - " + isVowel('a'));
-        System.out.println("b - " + isVowel('b'));
-        System.out.println("A - " + isVowel('A'));
-        System.out.println("1 - " + isVowel('1'));
-
-        System.out.println(replaceVovels("Hello world", '*'));
-
-        System.out.println(emphasize("dna ctgaaactga", 'a'));
-
-    }
-
-    public static String replaceVovels(String phrase, char ch) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < phrase.length(); i++) {
-            if (isVowel(phrase.charAt(i))) {
-                sb.append(ch);
-            }
-            else {
-                sb.append(phrase.charAt(i));
-            }
-        }
-        return sb.toString();
-    }
-
-    public static String emphasize(String phrase, char ch) {
+    public static String encrypt(String input, int key) {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String alphabetToLowerCase = alphabet.toLowerCase();
+        String enc = alphabet.substring(key) + alphabet.substring(0, key);
+        String encToLowerCase = enc.toLowerCase();
         StringBuilder result = new StringBuilder();
-        String toUpperCase = phrase.toLowerCase();
-        String toLowerCase = phrase.toLowerCase();
-
-        for (int i = 0; i < phrase.length(); i++) {
-            if (toUpperCase.charAt(i) == ch || toLowerCase.charAt(i) == ch) {
-                if (i % 2 == 0) {
-                    result.append('*');
-                }
-                else {
-                    result.append('+');
+        for (int i = 0; i < input.length(); i++) {
+            char ch = input.charAt(i);
+            int index = -1;
+            if (Character.isLowerCase(ch)) {
+                index = alphabetToLowerCase.indexOf(ch);
+                if (index != -1) {
+                    result.append(encToLowerCase.charAt(index));
                 }
             }
-            else {
-                result.append(phrase.charAt(i));
+            if (Character.isUpperCase(ch)) {
+                index = alphabet.indexOf(ch);
+                if (index != -1) {
+                    result.append(enc.charAt(index));
+                }
+            }
+            if (index == -1) {
+                result.append(input.charAt(i));
+            } else {
             }
         }
         return result.toString();
+    }
+
+    public static String encryptTwoKeys(String input, int key1, int key2) {
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            if (i % 2 == 0) {
+                sb1.append(input.charAt(i));
+            }
+            else {
+                sb2.append(input.charAt(i));
+            }
+        }
+        String result1 = encrypt(sb1.toString(), key1);
+        String result2 = encrypt(sb2.toString(), key2);
+        StringBuilder newResult = new StringBuilder();
+        int n = 0;
+        int m = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (i % 2 == 0) {
+                newResult.append(result1.charAt(n));
+                n++;
+            }
+            else {
+                newResult.append(result2.charAt(m));
+                m++;
+            }
+        }
+        return newResult.toString();
+    }
+
+
+    public static void testCaesar() {
+        FileResource fr = new FileResource();
+        String message = fr.asString();
+        int key = 23;
+        String encrypted = encrypt(message, key);
+        System.out.println("key is " + key + "\n" + encrypted);
+
 
     }
+
+
 }

@@ -1,6 +1,6 @@
 package week1;
 
-public class CaesarCipher {
+public class WordPlay {
     public static void main(String[] args) {
     testIsVovel();
     }
